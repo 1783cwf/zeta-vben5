@@ -1,30 +1,42 @@
 <script lang="ts" setup>
-import type { VbenFormSchema } from '@vben/common-ui';
 import type { BasicOption } from '@vben/types';
 
-import { computed, markRaw } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 
-import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
+import { AuthenticationLogin, type VbenFormSchema, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+import { GrantTypeEnum, type LoginParams } from '#/api';
+import { captchaImage, type CaptchaResponse } from '#/api/core/captcha';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 
+const loginFormRef = useTemplateRef('loginFormRef');
+
+const captchaInfo = ref<CaptchaResponse>({
+  text: '',
+  base64: '',
+  key: '',
+});
+
+async function loadCaptcha() {
+  captchaInfo.value = await captchaImage();
+
+  // 只有开发环境后台才会返回验证码的值
+  loginFormRef?.value?.setFieldValue('code', captchaInfo.value.text);
+}
+
+onMounted(async () => {
+  await loadCaptcha();
+});
+
 const MOCK_USER_OPTIONS: BasicOption[] = [
   {
     label: 'Super',
-    value: 'vben',
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-  },
-  {
-    label: 'User',
-    value: 'jack',
+    value: 'zetaAdmin',
   },
 ];
 
@@ -42,7 +54,7 @@ const formSchema = computed((): VbenFormSchema[] => {
         .string()
         .min(1, { message: $t('authentication.selectAccount') })
         .optional()
-        .default('vben'),
+        .default('zetaAdmin'),
     },
     {
       component: 'VbenInput',
@@ -57,15 +69,15 @@ const formSchema = computed((): VbenFormSchema[] => {
             );
             if (findUser) {
               form.setValues({
-                password: '123456',
-                username: findUser.value,
+                password: 'admin',
+                account: findUser.value,
               });
             }
           }
         },
         triggerFields: ['selectAccount'],
       },
-      fieldName: 'username',
+      fieldName: 'account',
       label: $t('authentication.username'),
       rules: z.string().min(1, { message: $t('authentication.usernameTip') }),
     },
@@ -79,24 +91,53 @@ const formSchema = computed((): VbenFormSchema[] => {
       rules: z.string().min(1, { message: $t('authentication.passwordTip') }),
     },
     {
-      component: markRaw(SliderCaptcha),
-      fieldName: 'captcha',
-      rules: z.boolean().refine((value) => value, {
-        message: $t('authentication.verifyRequiredTip'),
-      }),
+      component: 'VbenInputCaptcha',
+      componentProps: {
+        captcha: captchaInfo.value.base64,
+        class: 'focus:border-primary',
+        onCaptchaClick: loadCaptcha,
+        placeholder: $t('authentication.code'),
+      },
+      dependencies: {
+        if: () => true,
+      },
+      fieldName: 'code',
+      label: $t('authentication.code'),
+      rules: z.string().min(1, { message: $t('authentication.codeTip') }),
     },
   ];
 });
+
+async function handleAccountLogin(values: LoginParams) {
+  try {
+    const requestParam: any = { ...values };
+
+    requestParam.key = captchaInfo.value.key;
+    requestParam.grantType = GrantTypeEnum.PASSWORD;
+
+    // 登录
+    await authStore.authLogin(requestParam);
+  } catch (error) {
+    console.error(error);
+    // 处理验证码错误
+    if (error instanceof Error) {
+      // 刷新验证码
+      loginFormRef.value?.setFieldValue('code', '');
+      await loadCaptcha();
+    }
+  }
+}
 </script>
 
 <template>
   <AuthenticationLogin
+    ref="loginFormRef"
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
     :show-code-login="false"
     :show-qrcode-login="false"
     :show-register="false"
     :show-third-party-login="false"
-    @submit="authStore.authLogin"
+    @submit="handleAccountLogin"
   />
 </template>

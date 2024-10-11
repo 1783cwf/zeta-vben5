@@ -33,11 +33,11 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       loginLoading.value = true;
-      const { accessToken } = await loginApi(params);
+      const { token } = await loginApi(params);
 
       // 如果成功获取到 accessToken
-      if (accessToken) {
-        accessStore.setAccessToken(accessToken);
+      if (token) {
+        accessStore.setAccessToken(token);
 
         // 获取用户信息并存储到 accessStore 中
         const [fetchUserInfoResult, accessCodes] = await Promise.all([
@@ -96,8 +96,19 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchUserInfo() {
-    let userInfo: null | UserInfo = null;
-    userInfo = await getUserInfoApi();
+    const user = await getUserInfoApi();
+
+    /**
+     * 从后台user -> vben user转换
+     */
+    const userInfo: UserInfo = {
+      avatar: user.avatar ?? '',
+      permissions: user.permissions,
+      realName: user.username,
+      roles: user.roleIds,
+      userId: user.id,
+      username: user.account,
+    };
     userStore.setUserInfo(userInfo);
     return userInfo;
   }

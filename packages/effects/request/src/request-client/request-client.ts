@@ -87,6 +87,22 @@ class RequestClient {
   }
 
   /**
+   * POST请求方法 成功会弹出msg
+   */
+  public postWithMsg<T = any>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    return this.request<T>(url, {
+      ...config,
+      data,
+      method: 'POST',
+      successMessageMode: 'message',
+    });
+  }
+
+  /**
    * PUT请求方法
    */
   public put<T = any>(

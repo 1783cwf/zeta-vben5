@@ -42,7 +42,10 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
+    "crypto-js": "^4.2.0",
     "dayjs": "catalog:",
+    "jsencrypt": "^3.3.2",
+    "lodash-es": "^4.17.21",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

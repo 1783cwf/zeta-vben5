@@ -81,6 +81,7 @@ onMounted(() => {
     setFieldValue('username', localUsername);
   }
 });
+defineExpose({ setFieldValue });
 </script>
 
 <template>
