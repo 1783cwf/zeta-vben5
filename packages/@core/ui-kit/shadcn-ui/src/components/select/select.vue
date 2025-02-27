@@ -5,7 +5,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '../../ui';
 
 interface Props {
   class?: any;
@@ -27,3 +27,9 @@ const props = defineProps<Props>();
     </SelectContent>
   </Select>
 </template>
+
+<style lang="scss" scoped>
+button[role='combobox'][data-placeholder] {
+  color: hsl(var(--muted-foreground));
+}
+</style>

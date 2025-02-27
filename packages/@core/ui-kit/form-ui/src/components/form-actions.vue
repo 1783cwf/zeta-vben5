@@ -52,15 +52,20 @@ async function handleSubmit(e: Event) {
   if (!valid) {
     return;
   }
-  await unref(rootProps).handleSubmit?.(toRaw(form.values));
+
+  const values = toRaw(await unref(rootProps).formApi?.getValues());
+  await unref(rootProps).handleSubmit?.(values);
 }
 
 async function handleReset(e: Event) {
   e?.preventDefault();
   e?.stopPropagation();
   const props = unref(rootProps);
+
+  const values = toRaw(props.formApi?.getValues());
+
   if (isFunction(props.handleReset)) {
-    await props.handleReset?.(form.values);
+    await props.handleReset?.(values);
   } else {
     form.resetForm();
   }
@@ -75,18 +80,46 @@ watch(
     }
   },
 );
+
+defineExpose({
+  handleReset,
+  handleSubmit,
+});
 </script>
 <template>
   <div
     :class="
-      cn('col-span-full w-full pb-6 text-right', rootProps.actionWrapperClass)
+      cn(
+        'col-span-full w-full text-right',
+        rootProps.compact ? 'pb-2' : 'pb-6',
+        rootProps.actionWrapperClass,
+      )
     "
     :style="queryFormStyle"
   >
+    <template v-if="rootProps.actionButtonsReverse">
+      <!-- 提交按钮前 -->
+      <slot name="submit-before"></slot>
+
+      <component
+        :is="COMPONENT_MAP.PrimaryButton"
+        v-if="submitButtonOptions.show"
+        class="ml-3"
+        type="button"
+        @click="handleSubmit"
+        v-bind="submitButtonOptions"
+      >
+        {{ submitButtonOptions.content }}
+      </component>
+    </template>
+
+    <!-- 重置按钮前 -->
+    <slot name="reset-before"></slot>
+
     <component
-      :is="COMPONENT_MAP.DefaultResetActionButton"
+      :is="COMPONENT_MAP.DefaultButton"
       v-if="resetButtonOptions.show"
-      class="mr-3"
+      class="ml-3"
       type="button"
       @click="handleReset"
       v-bind="resetButtonOptions"
@@ -94,15 +127,24 @@ watch(
       {{ resetButtonOptions.content }}
     </component>
 
-    <component
-      :is="COMPONENT_MAP.DefaultSubmitActionButton"
-      v-if="submitButtonOptions.show"
-      type="button"
-      @click="handleSubmit"
-      v-bind="submitButtonOptions"
-    >
-      {{ submitButtonOptions.content }}
-    </component>
+    <template v-if="!rootProps.actionButtonsReverse">
+      <!-- 提交按钮前 -->
+      <slot name="submit-before"></slot>
+
+      <component
+        :is="COMPONENT_MAP.PrimaryButton"
+        v-if="submitButtonOptions.show"
+        class="ml-3"
+        type="button"
+        @click="handleSubmit"
+        v-bind="submitButtonOptions"
+      >
+        {{ submitButtonOptions.content }}
+      </component>
+    </template>
+
+    <!-- 展开按钮前 -->
+    <slot name="expand-before"></slot>
 
     <VbenExpandableArrow
       v-if="rootProps.showCollapseButton"
@@ -111,5 +153,8 @@ watch(
     >
       <span>{{ collapsed ? $t('expand') : $t('collapse') }}</span>
     </VbenExpandableArrow>
+
+    <!-- 展开按钮后 -->
+    <slot name="expand-after"></slot>
   </div>
 </template>

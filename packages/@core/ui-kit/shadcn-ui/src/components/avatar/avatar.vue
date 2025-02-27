@@ -5,15 +5,17 @@ import type {
   AvatarRootProps,
 } from 'radix-vue';
 
+import type { ClassType } from '@vben-core/typings';
+
 import { computed } from 'vue';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../../ui';
 
-interface Props extends AvatarRootProps, AvatarFallbackProps, AvatarImageProps {
+interface Props extends AvatarFallbackProps, AvatarImageProps, AvatarRootProps {
   alt?: string;
-  class?: any;
+  class?: ClassType;
   dot?: boolean;
-  dotClass?: any;
+  dotClass?: ClassType;
 }
 
 defineOptions({

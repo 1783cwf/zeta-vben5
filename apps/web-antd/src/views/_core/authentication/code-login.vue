@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { LoginCodeParams, VbenFormSchema } from '@vben/common-ui';
+import type { VbenFormSchema } from '@vben/common-ui';
+import type { Recordable } from '@vben/types';
 
 import { computed, ref } from 'vue';
 
@@ -9,6 +10,7 @@ import { $t } from '@vben/locales';
 defineOptions({ name: 'CodeLogin' });
 
 const loading = ref(false);
+const CODE_LENGTH = 6;
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
@@ -29,6 +31,7 @@ const formSchema = computed((): VbenFormSchema[] => {
     {
       component: 'VbenPinInput',
       componentProps: {
+        codeLength: CODE_LENGTH,
         createText: (countdown: number) => {
           const text =
             countdown > 0
@@ -40,7 +43,9 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       fieldName: 'code',
       label: $t('authentication.code'),
-      rules: z.string().min(1, { message: $t('authentication.codeTip') }),
+      rules: z.string().length(CODE_LENGTH, {
+        message: $t('authentication.codeTip', [CODE_LENGTH]),
+      }),
     },
   ];
 });
@@ -49,7 +54,7 @@ const formSchema = computed((): VbenFormSchema[] => {
  * Asynchronously handle the login process
  * @param values 登录表单数据
  */
-async function handleLogin(values: LoginCodeParams) {
+async function handleLogin(values: Recordable<any>) {
   // eslint-disable-next-line no-console
   console.log(values);
 }

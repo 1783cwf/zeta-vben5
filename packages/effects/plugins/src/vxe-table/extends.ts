@@ -1,13 +1,15 @@
-import type { VxeGridProps } from 'vxe-table';
+import type { VxeGridProps, VxeUIExport } from 'vxe-table';
+
+import type { Recordable } from '@vben/types';
 
 import type { VxeGridApi } from './api';
 
-import { isFunction } from '@vben/utils';
+import { formatDate, formatDateTime, isFunction } from '@vben/utils';
 
 export function extendProxyOptions(
   api: VxeGridApi,
   options: VxeGridProps,
-  getFormValues: () => Record<string, any>,
+  getFormValues: () => Recordable<any>,
 ) {
   [
     'query',
@@ -25,17 +27,32 @@ function extendProxyOption(
   key: string,
   api: VxeGridApi,
   options: VxeGridProps,
-  getFormValues: () => Record<string, any>,
+  getFormValues: () => Recordable<any>,
 ) {
   const { proxyConfig } = options;
-  const configFn = (proxyConfig?.ajax as any)?.[key];
+  const configFn = (proxyConfig?.ajax as Recordable<any>)?.[key];
   if (!isFunction(configFn)) {
     return options;
   }
 
-  const wrapperFn = async (params: any, _formValues: any, ...args: any[]) => {
+  const wrapperFn = async (
+    params: Recordable<any>,
+    customValues: Recordable<any>,
+    ...args: Recordable<any>[]
+  ) => {
     const formValues = getFormValues();
-    const data = await configFn(params, formValues, ...args);
+    const data = await configFn(
+      params,
+      {
+        /**
+         * 开启toolbarConfig.refresh功能
+         * 点击刷新按钮 这里的值为PointerEvent 会携带错误参数
+         */
+        ...(customValues instanceof PointerEvent ? {} : customValues),
+        ...formValues,
+      },
+      ...args,
+    );
     return data;
   };
   api.setState({
@@ -45,6 +62,20 @@ function extendProxyOption(
           [key]: wrapperFn,
         },
       },
+    },
+  });
+}
+
+export function extendsDefaultFormatter(vxeUI: VxeUIExport) {
+  vxeUI.formats.add('formatDate', {
+    tableCellFormatMethod({ cellValue }) {
+      return formatDate(cellValue);
+    },
+  });
+
+  vxeUI.formats.add('formatDateTime', {
+    tableCellFormatMethod({ cellValue }) {
+      return formatDateTime(cellValue);
     },
   });
 }

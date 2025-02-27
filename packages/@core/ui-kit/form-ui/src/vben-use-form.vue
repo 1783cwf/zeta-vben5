@@ -2,9 +2,13 @@
 import type { ExtendedFormApi, VbenFormProps } from './types';
 
 // import { toRaw, watch } from 'vue';
+import { nextTick, onMounted, watch } from 'vue';
+// import { isFunction } from '@vben-core/shared/utils';
 
 import { useForwardPriorityValues } from '@vben-core/composables';
-// import { isFunction } from '@vben-core/shared/utils';
+import { cloneDeep } from '@vben-core/shared/utils';
+
+import { useDebounceFn } from '@vueuse/core';
 
 import FormActions from './components/form-actions.vue';
 import {
@@ -34,10 +38,38 @@ props.formApi?.mount?.(form);
 const handleUpdateCollapsed = (value: boolean) => {
   props.formApi?.setState({ collapsed: !!value });
 };
+
+function handleKeyDownEnter(event: KeyboardEvent) {
+  if (!state.value.submitOnEnter || !forward.value.formApi?.isMounted) {
+    return;
+  }
+  // 如果是 textarea 不阻止默认行为，否则会导致无法换行。
+  // 跳过 textarea 的回车提交处理
+  if (event.target instanceof HTMLTextAreaElement) {
+    return;
+  }
+  event.preventDefault();
+
+  forward.value.formApi.validateAndSubmitForm();
+}
+
+const handleValuesChangeDebounced = useDebounceFn(async () => {
+  forward.value.handleValuesChange?.(
+    cloneDeep(await forward.value.formApi.getValues()),
+  );
+  state.value.submitOnChange && forward.value.formApi?.validateAndSubmitForm();
+}, 300);
+
+onMounted(async () => {
+  // 只在挂载后开始监听，form.values会有一个初始化的过程
+  await nextTick();
+  watch(() => form.values, handleValuesChangeDebounced, { deep: true });
+});
 </script>
 
 <template>
   <Form
+    @keydown.enter="handleKeyDownEnter"
     v-bind="forward"
     :collapsed="state.collapsed"
     :component-bind-event-map="COMPONENT_BIND_EVENT_MAP"
@@ -58,7 +90,20 @@ const handleUpdateCollapsed = (value: boolean) => {
           v-if="forward.showDefaultActions"
           :model-value="state.collapsed"
           @update:model-value="handleUpdateCollapsed"
-        />
+        >
+          <template #reset-before="resetSlotProps">
+            <slot name="reset-before" v-bind="resetSlotProps"></slot>
+          </template>
+          <template #submit-before="submitSlotProps">
+            <slot name="submit-before" v-bind="submitSlotProps"></slot>
+          </template>
+          <template #expand-before="expandBeforeSlotProps">
+            <slot name="expand-before" v-bind="expandBeforeSlotProps"></slot>
+          </template>
+          <template #expand-after="expandAfterSlotProps">
+            <slot name="expand-after" v-bind="expandAfterSlotProps"></slot>
+          </template>
+        </FormActions>
       </slot>
     </template>
   </Form>
