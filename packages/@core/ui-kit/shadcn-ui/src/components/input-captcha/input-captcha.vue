@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Input as VbenInput } from '../ui/input';
+import { Input as VbenInput } from '../../ui/input';
 /**
  * 非通用组件 直接按业务来写
  */
