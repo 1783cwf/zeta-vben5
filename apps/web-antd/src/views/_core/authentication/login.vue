@@ -1,13 +1,17 @@
 <script lang="ts" setup>
+import type { VbenFormSchema } from '@vben/common-ui';
 import type { BasicOption } from '@vben/types';
+
+import type { LoginParams } from '#/api';
+import type { CaptchaResponse } from '#/api/core/captcha';
 
 import { computed, onMounted, ref, useTemplateRef } from 'vue';
 
-import { AuthenticationLogin, type VbenFormSchema, z } from '@vben/common-ui';
+import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { GrantTypeEnum, type LoginParams } from '#/api';
-import { captchaImage, type CaptchaResponse } from '#/api/core/captcha';
+import { GrantTypeEnum } from '#/api';
+import { captchaImage } from '#/api/core/captcha';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
@@ -100,6 +104,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       },
       dependencies: {
         if: () => true,
+        triggerFields: ['selectAccount'],
       },
       fieldName: 'code',
       label: $t('authentication.code'),
@@ -110,7 +115,7 @@ const formSchema = computed((): VbenFormSchema[] => {
 
 async function handleAccountLogin(values: LoginParams) {
   try {
-    const requestParam: any = { ...values };
+    const requestParam = { ...values };
 
     requestParam.key = captchaInfo.value.key;
     requestParam.grantType = GrantTypeEnum.PASSWORD;

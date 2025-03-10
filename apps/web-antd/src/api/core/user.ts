@@ -1,14 +1,14 @@
 import { requestClient } from '#/api/request';
 
 export interface UserInfoResp {
-  id: number;
+  id: string;
   username: string;
   account: string;
   sex: number;
   avatar: string;
   state: number;
-  roleIds: number[];
-  permissions: number[];
+  roleIds: string[];
+  permissions: string[];
 }
 
 /**

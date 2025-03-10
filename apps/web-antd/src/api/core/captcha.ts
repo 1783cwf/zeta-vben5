@@ -6,7 +6,7 @@ import { requestClient } from '#/api/request';
  * @param text 生产环境不会返回
  */
 export interface CaptchaResponse {
-  text: boolean;
+  text: string;
   base64: string;
   key: string;
 }

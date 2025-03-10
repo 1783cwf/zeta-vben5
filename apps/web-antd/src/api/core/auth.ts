@@ -16,11 +16,11 @@ export interface LoginParams {
   password?: string;
   account?: string;
   // 验证码key
-  key?: number;
+  key?: string;
   // 验证码值
   code?: string;
   // 登录类型
-  grantType: GrantTypeEnum;
+  grantType?: GrantTypeEnum;
 }
 
 export namespace AuthApi {
@@ -38,7 +38,7 @@ export namespace AuthApi {
 /**
  * 登录
  */
-export async function loginApi(data: AuthApi.LoginParams) {
+export async function loginApi(data: LoginParams) {
   return requestClient.post<AuthApi.LoginResult>('/system/login', data);
 }
 
