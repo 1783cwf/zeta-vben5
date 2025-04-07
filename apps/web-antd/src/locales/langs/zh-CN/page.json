@@ -10,5 +10,11 @@
     "title": "概览",
     "analytics": "分析页",
     "workspace": "工作台"
+  },
+  "vben": {
+    "project": "项目",
+    "document": "文档",
+    "github": "Github",
+    "about": "关于"
   }
 }

@@ -77,6 +77,9 @@ function createRequestClient(baseURL: string) {
     },
   });
 
+  function formatToken(token: null | string) {
+    return token ? `Bearer ${token}` : null;
+  }
   // // response数据解构
   // client.addResponseInterceptor<HttpResponse>({
   //   fulfilled: (response) => {
@@ -97,6 +100,7 @@ function createRequestClient(baseURL: string) {
       doReAuthenticate,
       doRefreshToken,
       enableRefreshToken: preferences.app.enableRefreshToken,
+      formatToken,
     }),
   );
 

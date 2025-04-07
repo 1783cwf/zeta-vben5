@@ -11,5 +11,11 @@
     "title": "Dashboard",
     "analytics": "Analytics",
     "workspace": "Workspace"
+  },
+  "vben": {
+    "project": "project",
+    "document": "document",
+    "github": "Github",
+    "about": "About"
   }
 }
