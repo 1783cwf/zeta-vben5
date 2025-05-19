@@ -42,16 +42,16 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
-    "crypto-js": "^4.2.0",
+    "crypto-js": "catalog:",
     "dayjs": "catalog:",
-    "jsencrypt": "^3.3.2",
-    "lodash-es": "^4.17.21",
+    "jsencrypt": "catalog:",
+    "lodash-es": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
-    "@types/lodash-es": "^4.17.12"
+    "@types/crypto-js": "catalog:",
+    "@types/lodash-es": "catalog:"
   }
 }
