@@ -9,5 +9,13 @@ export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
     name: import.meta.env.VITE_APP_TITLE,
+    /**
+     * 不要动这里  后端路由模式
+     */
+    accessMode: 'backend',
+    /**
+     * 不需要refresh token 由后端处理
+     */
+    enableRefreshToken: false,
   },
 });
