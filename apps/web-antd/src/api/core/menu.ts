@@ -1,5 +1,3 @@
-import type { RouteRecordStringComponent } from '@vben/types';
-
 import { requestClient } from '#/api/request';
 
 /**

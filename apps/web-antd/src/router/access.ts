@@ -4,16 +4,18 @@ import type {
   RouteRecordStringComponent,
 } from '@vben/types';
 
+import type { Menu } from '#/api';
+
 import { generateAccessible } from '@vben/access';
 import { preferences } from '@vben/preferences';
 
 import { message } from 'ant-design-vue';
+import { cloneDeep } from 'lodash-es';
 
-import { getAllMenusApi, type Menu } from '#/api';
+import { getAllMenusApi } from '#/api';
 import { BasicLayout, IFrameView } from '#/layouts';
 import { $t } from '#/locales';
-import routes from './routes/modules/dashboard';
-import { cloneDeep } from 'lodash-es';
+
 import { localMenus } from './routes/local';
 
 const forbiddenComponent = () => import('#/views/_core/fallback/forbidden.vue');
@@ -187,7 +189,7 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
 
   const layoutMap: ComponentRecordType = {
     BasicLayout,
-    IFrameView, 
+    IFrameView,
   };
 
   return await generateAccessible(preferences.app.accessMode, {

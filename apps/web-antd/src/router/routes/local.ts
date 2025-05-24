@@ -34,7 +34,7 @@ export const localMenus: RouteRecordStringComponent[] = [
         meta: {
           title: 'page.dashboard.workspace',
         },
-      }
+      },
     ],
   },
   {
@@ -46,5 +46,5 @@ export const localMenus: RouteRecordStringComponent[] = [
     },
     name: 'About',
     path: '/vben-admin/about',
-  }
+  },
 ];
