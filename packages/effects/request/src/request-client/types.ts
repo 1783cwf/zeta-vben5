@@ -41,6 +41,14 @@ type RequestContentType =
 
 type RequestClientOptions = CreateAxiosDefaults & ExtendOptions;
 
+/**
+ * SSE 请求选项
+ */
+interface SseRequestOptions extends RequestInit {
+  onMessage?: (message: string) => void;
+  onEnd?: () => void;
+}
+
 interface RequestInterceptorConfig {
   fulfilled?: (
     config: ExtendOptions & InternalAxiosRequestConfig,
@@ -79,6 +87,7 @@ export type {
   RequestInterceptorConfig,
   RequestResponse,
   ResponseInterceptorConfig,
+  SseRequestOptions,
 };
 
 export type ErrorMessageMode = 'message' | 'modal' | 'none' | undefined;
