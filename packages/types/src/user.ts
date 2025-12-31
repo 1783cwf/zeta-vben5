@@ -3,14 +3,9 @@ import type { BasicUserInfo } from '@vben-core/typings';
 /** 用户信息 */
 interface UserInfo extends BasicUserInfo {
   /**
-   * 首页地址
+   * 拓展使用
    */
-  homePath?: string;
-
-  /**
-   * 权限
-   */
-  permissions: string[];
+  [key: string]: any;
 }
 
 export type { UserInfo };

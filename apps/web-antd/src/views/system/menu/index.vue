@@ -4,6 +4,7 @@
 
 <template>
   <div>
+    这是一个菜单
     <!-- 这里可以添加组件内容 -->
   </div>
 </template>

@@ -40,6 +40,10 @@ const customConfig: Linter.Config[] = [
     files: ['apps/**/**'],
     ignores: restrictedImportIgnores,
     rules: {
+      // 允许使用void类型
+      '@typescript-eslint/no-invalid-void-type': 'off',
+      // 关闭 不允许使用console
+      'no-console': 'off',
       'no-restricted-imports': [
         'error',
         {
@@ -161,6 +165,13 @@ const customConfig: Linter.Config[] = [
     files: ['internal/**/**', 'scripts/**/**'],
     rules: {
       'no-console': 'off',
+    },
+  },
+  {
+    // 针对 TypeScript 文件禁用 Vue 相关规则
+    files: ['**/*.ts', '!**/*.vue'],
+    rules: {
+      'vue/one-component-per-file': 'off',
     },
   },
 ];

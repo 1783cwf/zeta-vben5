@@ -495,7 +495,7 @@ $namespace: vben;
   &.is-rounded {
     --menu-item-margin-x: 8px;
     --menu-item-collapse-margin-x: 6px;
-    --menu-item-radius: 8px;
+    --menu-item-radius: 6px;
   }
 
   &.is-horizontal:not(.is-rounded) {

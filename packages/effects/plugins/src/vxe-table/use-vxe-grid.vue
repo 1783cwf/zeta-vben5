@@ -126,6 +126,8 @@ const [Form, formApi] = useTableForm({
   submitButtonOptions: {
     content: computed(() => $t('common.search')),
   },
+  // enter提交
+  submitOnEnter: true,
   wrapperClass: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
 });
 
@@ -299,9 +301,12 @@ async function init() {
   const autoLoad = defaultGridOptions.proxyConfig?.autoLoad;
   const enableProxyConfig = options.value.proxyConfig?.enabled;
   if (enableProxyConfig && autoLoad) {
+    // 第一次拿到的是readonly的数据 如果需要修改 需要cloneDeep
     props.api.grid.commitProxy?.(
       'query',
-      formOptions.value ? ((await formApi.getValues()) ?? {}) : {},
+      cloneDeep(formOptions.value)
+        ? (cloneDeep(await formApi.getValues()) ?? {})
+        : {},
     );
     // props.api.reload(formApi.form?.values ?? {});
   }

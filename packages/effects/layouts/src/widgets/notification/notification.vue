@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import type { NotificationItem } from './types';
 
-import { useRouter } from 'vue-router';
-
-import { Bell, CircleCheckBig, CircleX, MailCheck } from '@vben/icons';
+import { Bell, MailCheck } from '@vben/icons';
 import { $t } from '@vben/locales';
 
 import {
@@ -37,11 +35,9 @@ const emit = defineEmits<{
   clear: [];
   makeAll: [];
   read: [NotificationItem];
-  remove: [NotificationItem];
   viewAll: [];
 }>();
 
-const router = useRouter();
 const [open, toggle] = useToggle();
 
 function close() {
@@ -62,28 +58,7 @@ function handleClear() {
 }
 
 function handleClick(item: NotificationItem) {
-  // 如果通知项有链接，点击时跳转
-  if (item.link) {
-    navigateTo(item.link, item.query, item.state);
-  }
-}
-
-function navigateTo(
-  link: string,
-  query?: Record<string, any>,
-  state?: Record<string, any>,
-) {
-  if (link.startsWith('http://') || link.startsWith('https://')) {
-    // 外部链接，在新标签页打开
-    window.open(link, '_blank');
-  } else {
-    // 内部路由链接，支持 query 参数和 state
-    router.push({
-      path: link,
-      query: query || {},
-      state,
-    });
-  }
+  emit('read', item);
 }
 </script>
 <template>
@@ -116,7 +91,7 @@ function navigateTo(
       </div>
       <VbenScrollbar v-if="notifications.length > 0">
         <ul class="!flex max-h-[360px] w-full flex-col">
-          <template v-for="item in notifications" :key="item.id ?? item.title">
+          <template v-for="item in notifications" :key="item.title">
             <li
               class="hover:bg-accent border-border relative flex w-full cursor-pointer items-start gap-5 border-t px-3 py-3"
               @click="handleClick(item)"
@@ -132,6 +107,7 @@ function navigateTo(
                 <img
                   :src="item.avatar"
                   class="aspect-square h-full w-full object-cover"
+                  role="img"
                 />
               </span>
               <div class="flex flex-col gap-1 leading-none">
@@ -142,30 +118,6 @@ function navigateTo(
                 <p class="text-muted-foreground line-clamp-2 text-xs">
                   {{ item.date }}
                 </p>
-              </div>
-              <div
-                class="absolute right-3 top-1/2 flex -translate-y-1/2 flex-col gap-2"
-              >
-                <VbenIconButton
-                  v-if="!item.isRead"
-                  size="xs"
-                  variant="ghost"
-                  class="h-6 px-2"
-                  :tooltip="$t('common.confirm')"
-                  @click.stop="emit('read', item)"
-                >
-                  <CircleCheckBig class="size-4" />
-                </VbenIconButton>
-                <VbenIconButton
-                  v-if="item.isRead"
-                  size="xs"
-                  variant="ghost"
-                  class="text-destructive h-6 px-2"
-                  :tooltip="$t('common.delete')"
-                  @click.stop="emit('remove', item)"
-                >
-                  <CircleX class="size-4" />
-                </VbenIconButton>
               </div>
             </li>
           </template>

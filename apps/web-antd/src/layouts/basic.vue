@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
-import { BookOpenText, CircleHelp, SvgGithubIcon } from '@vben/icons';
+import { BookOpenText, CircleHelp } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -30,6 +30,7 @@ const notifications = ref<NotificationItem[]>([
     isRead: true,
     message: '描述信息描述信息描述信息',
     title: '收到了 14 份新周报',
+    userId: '',
   },
   {
     id: 2,
@@ -38,6 +39,7 @@ const notifications = ref<NotificationItem[]>([
     isRead: false,
     message: '描述信息描述信息描述信息',
     title: '朱偏右 回复了你',
+    userId: '',
   },
   {
     id: 3,
@@ -46,6 +48,7 @@ const notifications = ref<NotificationItem[]>([
     isRead: false,
     message: '描述信息描述信息描述信息',
     title: '曲丽丽 评论了你',
+    userId: '',
   },
   {
     id: 4,
@@ -54,6 +57,7 @@ const notifications = ref<NotificationItem[]>([
     isRead: false,
     message: '描述信息描述信息描述信息',
     title: '代办提醒',
+    userId: '',
   },
   {
     id: 5,
@@ -62,7 +66,7 @@ const notifications = ref<NotificationItem[]>([
     isRead: false,
     message: '描述信息描述信息描述信息',
     title: '跳转Workspace示例',
-    link: '/workspace',
+    userId: '',
   },
   {
     id: 6,
@@ -71,7 +75,7 @@ const notifications = ref<NotificationItem[]>([
     isRead: false,
     message: '描述信息描述信息描述信息',
     title: '跳转外部链接示例',
-    link: 'https://doc.vben.pro',
+    userId: '',
   },
 ]);
 
@@ -107,7 +111,6 @@ const menus = computed(() => [
         target: '_blank',
       });
     },
-    icon: SvgGithubIcon,
     text: 'GitHub',
   },
   {

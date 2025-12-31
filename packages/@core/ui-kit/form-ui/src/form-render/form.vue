@@ -46,7 +46,7 @@ const wrapperClass = computed(() => {
   if (props.layout === 'inline') {
     cls.push('flex-wrap gap-x-2');
   } else {
-    cls.push(props.compact ? 'gap-x-2' : 'gap-x-4', 'flex-col grid');
+    cls.push(props.compact ? 'gap-x-2' : 'gap-x-4', 'flex-col grid gap-y-1.5');
   }
   return cn(...cls, props.wrapperClass);
 });

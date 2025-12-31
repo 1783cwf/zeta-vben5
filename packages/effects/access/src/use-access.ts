@@ -17,6 +17,10 @@ function useAccess() {
    */
   function hasAccessByRoles(roles: string[]) {
     const userRoleSet = new Set(userStore.userRoles);
+    // 超管的角色
+    if (userRoleSet.has('superadmin')) {
+      return true;
+    }
     const intersection = roles.filter((item) => userRoleSet.has(item));
     return intersection.length > 0;
   }
@@ -28,7 +32,13 @@ function useAccess() {
    */
   function hasAccessByCodes(codes: string[]) {
     const userCodesSet = new Set(accessStore.accessCodes);
-
+    /**
+     * 管理员权限
+     */
+    if (userCodesSet.has('*:*:*')) {
+      return true;
+    }
+    // 其他 判断是否存在
     const intersection = codes.filter((item) => userCodesSet.has(item));
     return intersection.length > 0;
   }

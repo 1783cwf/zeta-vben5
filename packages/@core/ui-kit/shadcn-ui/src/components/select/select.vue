@@ -12,6 +12,8 @@ import {
 interface Props {
   allowClear?: boolean;
   class?: any;
+  // 弹出层的类名
+  contentClass?: any;
   options?: Array<{ label: string; value: string }>;
   placeholder?: string;
 }
@@ -38,7 +40,7 @@ function handleClear() {
         class="mr-1 size-4 cursor-pointer opacity-50 hover:opacity-100"
       />
     </SelectTrigger>
-    <SelectContent>
+    <SelectContent :class="props.contentClass">
       <template v-for="item in options" :key="item.value">
         <SelectItem :value="item.value"> {{ item.label }} </SelectItem>
       </template>

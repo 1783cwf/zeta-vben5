@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import type { VbenFormSchema } from '@vben/common-ui';
+import type { LoginAndRegisterParams, VbenFormSchema } from '@vben/common-ui';
 import type { BasicOption } from '@vben/types';
 
-import type { LoginParams } from '#/api';
 import type { CaptchaResponse } from '#/api/core/captcha';
 
 import { computed, onMounted, ref, useTemplateRef } from 'vue';
@@ -30,7 +29,9 @@ async function loadCaptcha() {
   captchaInfo.value = await captchaImage();
 
   // 只有开发环境后台才会返回验证码的值
-  loginFormRef?.value?.setFieldValue('code', captchaInfo.value.text);
+  loginFormRef.value
+    ?.getFormApi()
+    .setFieldValue('code', captchaInfo.value.text);
 }
 
 onMounted(async () => {
@@ -113,12 +114,13 @@ const formSchema = computed((): VbenFormSchema[] => {
   ];
 });
 
-async function handleAccountLogin(values: LoginParams) {
+async function handleAccountLogin(values: LoginAndRegisterParams) {
   try {
-    const requestParam = { ...values };
-
-    requestParam.key = captchaInfo.value.key;
-    requestParam.grantType = GrantTypeEnum.PASSWORD;
+    const requestParam = {
+      ...values,
+      key: captchaInfo.value.key,
+      grantType: GrantTypeEnum.PASSWORD,
+    };
 
     // 登录
     await authStore.authLogin(requestParam);
@@ -127,7 +129,7 @@ async function handleAccountLogin(values: LoginParams) {
     // 处理验证码错误
     if (error instanceof Error) {
       // 刷新验证码
-      loginFormRef.value?.setFieldValue('code', '');
+      loginFormRef.value?.getFormApi().setFieldValue('code', '');
       await loadCaptcha();
     }
   }

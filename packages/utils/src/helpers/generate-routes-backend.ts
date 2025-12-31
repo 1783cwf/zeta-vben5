@@ -62,8 +62,11 @@ function convertRoutes(
       if (pageMap[pageKey]) {
         route.component = pageMap[pageKey];
       } else {
-        console.error(`route component is invalid: ${pageKey}`, route);
-        route.component = pageMap['/_core/fallback/not-found.vue'];
+        // console.error(`route component is invalid: ${pageKey}`, route);
+        // route.component = pageMap['/_core/fallback/not-found.vue'];
+        console.error(`未找到对应组件: /views${component}.vue`);
+        // 默认为404页面
+        route.component = layoutMap.NotFoundComponent;
       }
     }
 

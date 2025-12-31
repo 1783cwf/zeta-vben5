@@ -104,16 +104,18 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     });
   };
 
-  function resize() {
+  function resize(withAnimation = true) {
     const el = getChartEl();
     if (isElHidden(el)) {
       return;
     }
     chartInstance?.resize({
-      animation: {
-        duration: 300,
-        easing: 'quadraticIn',
-      },
+      animation: withAnimation
+        ? {
+            duration: 300,
+            easing: 'quadraticIn',
+          }
+        : undefined,
     });
   }
 

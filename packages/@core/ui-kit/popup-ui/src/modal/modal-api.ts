@@ -125,6 +125,16 @@ export class ModalApi {
   }
 
   /**
+   * loading和lock的区别
+   * loading允许关闭窗口
+   * lock不允许关闭窗口
+   * @param loading 是否loading
+   */
+  modalLoading(loading: boolean) {
+    this.setState({ confirmLoading: loading, loading });
+  }
+
+  /**
    * 取消操作
    */
   onCancel() {

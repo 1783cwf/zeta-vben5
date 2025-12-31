@@ -68,14 +68,9 @@ interface ResponseInterceptorConfig<T = any> {
 type MakeErrorMessageFn = (message: string, error: any) => void;
 
 interface HttpResponse<T = any> {
-  /**
-   * 0 表示成功 其他表示失败
-   * 0 means success, others means fail
-   */
   code: number;
   data: T;
-  message: string;
-  success: boolean;
+  msg: string;
 }
 
 export type {
@@ -92,6 +87,7 @@ export type {
 
 export type ErrorMessageMode = 'message' | 'modal' | 'none' | undefined;
 export type SuccessMessageMode = ErrorMessageMode;
+
 /**
  * 拓展axios的请求配置
  */
@@ -104,10 +100,6 @@ declare module 'axios' {
      */
     errorMessageMode?: ErrorMessageMode;
     /**
-     * 是否格式化日期
-     */
-    formatDate?: boolean;
-    /**
      * 是否返回原生axios响应
      */
     isReturnNativeResponse?: boolean;
@@ -115,14 +107,6 @@ declare module 'axios' {
      * 是否需要转换响应 即只获取{code, msg, data}中的data
      */
     isTransformResponse?: boolean;
-    /**
-     * param添加到url后
-     */
-    joinParamsToUrl?: boolean;
-    /**
-     * 加入时间戳
-     */
-    joinTime?: boolean;
     /**
      * 成功弹窗类型
      */
